@@ -4,8 +4,10 @@ public abstract class Shape {
     protected String color;
     protected boolean filled;
 
-    public Shape() {}
-    public Shape(String color,boolean filled) {
+    public Shape() {
+    }
+
+    public Shape(String color, boolean filled) {
         this.color = color;
         this.filled = filled;
     }
@@ -39,6 +41,9 @@ public abstract class Shape {
     public abstract double getPerimeter();
 
     public static void main(String[] args) {
-
+        Shape square1 = new Square(15,"red",true);
+        Shape square2 = new Square(30,"green",true);
+        System.out.println(square1);
+        System.out.println(square2);
     }
 }

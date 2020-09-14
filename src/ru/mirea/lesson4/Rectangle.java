@@ -2,7 +2,7 @@ package ru.mirea.lesson4;
 
 public class Rectangle extends Shape {
     protected double width;
-    protected double length;
+    protected double height;
 
     public Rectangle() {}
     public Rectangle(double width, double length) {}
@@ -17,11 +17,11 @@ public class Rectangle extends Shape {
     }
 
     public double getLength() {
-        return length;
+        return height;
     }
 
     public void setLength(double length) {
-        this.length = length;
+        this.height = length;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Rectangle extends Shape {
     public String toString() {
         return "Rectangle{" +
                 "width=" + width +
-                ", length=" + length +
+                ", length=" + height +
                 '}';
     }
 }
