@@ -32,4 +32,5 @@ public class Human {
     static class Hand {
         String name = "руки";
     }
+
 }
