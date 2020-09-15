@@ -2,11 +2,20 @@ package ru.mirea.lesson4;
 
 public class Rectangle extends Shape {
     protected double width;
-    protected double height;
+    protected double length;
 
     public Rectangle() {}
-    public Rectangle(double width, double length) {}
-    public Rectangle(double width, double length, String color, boolean filled) {}
+
+    public Rectangle(double width, double length) {
+        this.width = width;
+        this.length = length;
+    }
+
+    public Rectangle(String color, boolean filled, double width, double length) {
+        super(color, filled);
+        this.width = width;
+        this.length = length;
+    }
 
     public double getWidth() {
         return width;
@@ -17,28 +26,30 @@ public class Rectangle extends Shape {
     }
 
     public double getLength() {
-        return height;
+        return length;
     }
 
     public void setLength(double length) {
-        this.height = length;
+        this.length = length;
     }
 
     @Override
     public double getArea() {
-        return 0;
+        return width * length;
     }
 
     @Override
     public double getPerimeter() {
-        return 0;
+        return 2 * (width + length);
     }
 
     @Override
     public String toString() {
         return "Rectangle{" +
                 "width=" + width +
-                ", length=" + height +
+                ", length=" + length +
+                ", color='" + color + '\'' +
+                ", filled=" + filled +
                 '}';
     }
 }
