@@ -1,14 +1,48 @@
 package ru.mirea.lesson5;
 
 public class MovablePoint implements Movable {
-    int x,y;
-    int xSpeed, ySpeed;
 
-    public MovablePoint(int x, int y, int xSpeed, int ySpeed) {
+    private double x,y;
+
+    public MovablePoint(double x, double y) {
         this.x = x;
         this.y = y;
-        this.xSpeed = xSpeed;
-        this.ySpeed = ySpeed;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    @Override
+    public void moveUp() {
+        y++;
+    }
+
+    @Override
+    public void moveDown() {
+        y--;
+    }
+
+    @Override
+    public void moveLeft() {
+        x--;
+    }
+
+    @Override
+    public void moveRight() {
+        x++;
     }
 
     @Override
@@ -16,28 +50,6 @@ public class MovablePoint implements Movable {
         return "MovablePoint{" +
                 "x=" + x +
                 ", y=" + y +
-                ", xSpeed=" + xSpeed +
-                ", ySpeed=" + ySpeed +
                 '}';
-    }
-
-    @Override
-    public void moveUp() {
-        this.y += this.ySpeed;
-    }
-
-    @Override
-    public void moveDown() {
-        this.y -= this.ySpeed;
-    }
-
-    @Override
-    public void moveLeft() {
-        this.x -= this.xSpeed;
-    }
-
-    @Override
-    public void moveRight() {
-        this.x += this.xSpeed;
     }
 }

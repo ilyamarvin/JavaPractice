@@ -1,39 +1,46 @@
 package ru.mirea.lesson5;
 
-public class MovableCircle implements Movable {
-    private int radius;
-    private MovablePoint center;
+import ru.mirea.lesson4.Circle;
 
-    public MovableCircle(int radius, MovablePoint center) {
-        this.radius = radius;
+public class MovableCircle extends Circle implements Movable {
+
+    private MovablePoint center;
+    private Circle circle;
+
+    public MovableCircle() {
+    }
+
+    public MovableCircle(double radius, MovablePoint center) {
+        super(radius);
         this.center = center;
     }
 
+
     @Override
     public void moveUp() {
-        this.center.y += this.center.ySpeed;
+        center.moveUp();
     }
 
     @Override
     public void moveDown() {
-        this.center.y -= this.center.ySpeed;
+        center.moveDown();
     }
 
     @Override
     public void moveLeft() {
-        this.center.x -= this.center.xSpeed;
+        center.moveLeft();
     }
 
     @Override
     public void moveRight() {
-        this.center.x += this.center.xSpeed;
+        center.moveRight();
     }
 
     @Override
     public String toString() {
         return "MovableCircle{" +
-                "radius=" + radius +
-                ", center=" + center +
+                "center=" + center +
+                ", circle=" + circle +
                 '}';
     }
 }
