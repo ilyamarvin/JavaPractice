@@ -9,9 +9,12 @@ public class Main {
         Random r = new Random(100000);
 
         for (int i = 0; i < 100; i++) {
-            cumpany.hire(new Employee("Andrey", "L0hov", "Litkarino", r.nextInt(10000000), new Dates(05, 03, 2001)));
+            cumpany.hire(new Employee("Andrey", "Lyahov", "Litkarino", r.nextInt(10000000), new Dates(05, 03, 2001)));
         }
 
+        cumpany.doSomethingWithEmployee(
+                new UsageInterface(8402391),
+                (employee, i) -> System.out.println("employee " + i + ":" + employee));
 
         int m = 20_000;
         cumpany.doSomethingWithEmployee(new EmployeeSelector() {
