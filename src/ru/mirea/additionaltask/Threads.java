@@ -8,10 +8,11 @@ public class Threads {
     static int[] ArrayOfThreadSums = new int[4];
     static int IntSum = 0;
     static ReentrantLock lock = new ReentrantLock();
+
     public static void main(String[] args) throws InterruptedException {
         long startTime = System.currentTimeMillis();
         ArrayList<Thread> threads = new ArrayList<>();
-        for (int i = 0; i <  4; i++){
+        for (int i = 0; i < 4; i++) {
             final int localI = i;
             Thread thread = new Thread(() -> work(localI));
             thread.start();
@@ -23,7 +24,7 @@ public class Threads {
         }
         long endTime = System.currentTimeMillis();
         System.out.println("total time: " + (endTime - startTime));
-        for(int i = 0; i< ArrayOfThreadSums.length; i++)
+        for (int i = 0; i < ArrayOfThreadSums.length; i++)
             IntSum += ArrayOfThreadSums[i];
         System.out.println("total sum: " + IntSum);
     }
@@ -32,7 +33,7 @@ public class Threads {
         long startTime = System.currentTimeMillis();
         long result = doHardWork(i * 1000, 100_000_000, i);
         long endTime = System.currentTimeMillis();
-        System.out.println(i + ": " + result + " | " + (endTime-startTime));
+        System.out.println(i + ": " + result + " | " + (endTime - startTime));
     }
 
     //The best way to avoid locks
@@ -42,10 +43,11 @@ public class Threads {
         for (int i = 0; i < count; i++) {
             a += (start + i) * (start + i) * Math.sqrt(start + i);
             //checking work of threads
-            if(i % 250000 == 0) {
-                System.out.print(k+": ");
+            if (i % 250000 == 0) {
+                System.out.print(k + ": ");
                 System.out.println(ArrayOfThreadSums[k]);
-            };
+            }
+            ;
             ArrayOfThreadSums[k]++;
         }
         return a;
