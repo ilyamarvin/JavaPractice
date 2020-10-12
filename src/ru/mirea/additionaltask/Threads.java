@@ -37,7 +37,7 @@ public class Threads {
 
     //The best way to avoid locks
     //Don't write multithreaded code!
-    private synchronized static long doHardWork(int start, int count, int k) {
+    private static long doHardWork(int start, int count, int k) {
         long a = 0;
         for (int i = 0; i < count; i++) {
             a += (start + i) * (start + i) * Math.sqrt(start + i);
