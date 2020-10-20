@@ -6,13 +6,13 @@ import java.util.regex.Pattern;
 
 public class ChangeChars {
 
+    // Выглядит как 💩, но она работает 🤙🏻🤙🏻🤙🏻
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> list = new ArrayList<>();
-        String[] parts;
-        char[] ch;
         int N, j;
-        String rule, word;
+        String rule, word, word1, word2;
 
         System.out.println("Введите количество правил: ");
         N = scanner.nextInt();
@@ -29,6 +29,8 @@ public class ChangeChars {
 
         System.out.println("Введите строку, к которой хотите применить правила изменения: ");
         word = scanner.nextLine();
+        word1 = word;
+        word2 = word;
 
         // Замена переменных до последнего совпадения
         /*for (int i = 0; i < N; i++) {
@@ -78,14 +80,25 @@ public class ChangeChars {
             }
         }*/
 
-        // ОНО РАБОТАЕТ (надо было всего лишь проходить по одному правилу через количество правил)
-        j = N-1;
+        // ОНО РАБОТАЕТ 😳 (надо было всего лишь проходить по одному правилу через количество правил)
+        j = N - 1;
         for (int i = 0; i < N; i++) {
-            word = word.replace(list.get(j).split(" ")[0], list.get(j).split(" ")[1]);
+            word1 = word1.replace(list.get(j).split(" ")[0], list.get(j).split(" ")[1]);
             j--;
         }
+        System.out.println(word1 + " измененная строка без использования регулярных выражений");
 
-        System.out.println(word);
 
+        // Замена через регулярные выражения
+        j = N - 1;
+        for (int i = 0; i < N; i++) {
+            Pattern p = Pattern.compile("(\\w+) (\\w+)");
+            Matcher m = p.matcher(list.get(j));
+            if (m.matches()) {
+                word2 = word2.replace(m.group(1), m.group(2));
+                j--;
+            }
+        }
+        System.out.println(word2 + " измененная строка с использованием регулярных выражений");
     }
 }
