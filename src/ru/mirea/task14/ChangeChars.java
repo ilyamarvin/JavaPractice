@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChangeCharsByReplace {
+public class ChangeChars {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -59,7 +59,7 @@ public class ChangeCharsByReplace {
 
         // Jesus, HELP ME (time 3:02 ночи, зачем я это делаю...)
         // Оно опять работает не по ТЗ
-        for (int i = 0; i < N; i++) {
+        /*for (int i = 0; i < N; i++) {
             ch = new char[list.get(i).split(" ")[0].length()];
 
             for (int k = 0; k < word.length(); k++) {
@@ -76,7 +76,16 @@ public class ChangeCharsByReplace {
                     }
                 }
             }
+        }*/
+
+        // ОНО РАБОТАЕТ (надо было всего лишь проходить по одному правилу через количество правил)
+        j = N-1;
+        for (int i = 0; i < N; i++) {
+            word = word.replace(list.get(j).split(" ")[0], list.get(j).split(" ")[1]);
+            j--;
         }
+
         System.out.println(word);
+
     }
 }
