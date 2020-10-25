@@ -14,7 +14,7 @@ public class ChangeChars {
         Map<String, String> list2 = new HashMap<>();
         int N, j;
         int ind[];
-        String rule, word, word1, word2, buffer;
+        String rule, word, word1, word2;
 
         System.out.println("Введите количество правил: ");
         N = scanner.nextInt();
@@ -27,17 +27,17 @@ public class ChangeChars {
         for (int i = 0; i < N; i++) {
             rule = scanner.nextLine();
             list1.add(rule);
-            /*list.put(scanner.next(), scanner.next());
-            System.out.println(list);*/
+            //list.put(scanner.next(), scanner.next());
+            //System.out.println(list1);
         }
 
-        //Определение размеров правил(по включению других правил)
+        //Определение размеров правил
         int check = 0;
-        for(int i = 0; i < N; i++){
-            for(int k = 0; k < N; k++){
-                if(i != k){
-                    if(list1.get(i).split(" ")[0].contains(list1.get(k).split(" ")[0])){
-                        check ++;
+        for (int i = 0; i < N; i++) {
+            for (int k = 0; k < N; k++) {
+                if (i != k) {
+                    if (list1.get(i).split(" ")[0].contains(list1.get(k).split(" ")[0])) {
+                        check++;
                     }
                 }
             }
@@ -46,13 +46,13 @@ public class ChangeChars {
         }
 
 
-        //Сортировка правил по их размеру(т.е. по включению других правил)
+        //Сортировка правил по их размеру
         String sorting = "";
-        for(int i = 0; i < N; i++){
-            for(int k = 0; k < N; k++){
-                if (ind[i] > ind[k]){
+        for (int i = 0; i < N; i++) {
+            for (int k = 0; k < N; k++) {
+                if (ind[i] > ind[k]) {
                     sorting = list1.get(k);
-                    list1.set(k,list1.get(i));
+                    list1.set(k, list1.get(i));
                     list1.set(i, sorting);
                 }
             }
@@ -62,7 +62,6 @@ public class ChangeChars {
         word = scanner.next();
         word1 = word;
         word2 = word;
-        int a = 0;
 
         // Замена переменных до последнего совпадения
         /*for (int i = 0; i < N; i++) {
@@ -133,7 +132,7 @@ public class ChangeChars {
         System.out.println(word2 + " измененная строка с использованием регулярных выражений");
 
         // Второй рабочий вариант
-        
+
         /*StringBuilder resultWithoutRegex = new StringBuilder();
         for (int i = 0; i < word1.length(); i++) {
             boolean flag = false;
