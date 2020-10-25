@@ -10,9 +10,9 @@ public class ChangeChars {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<String> list = new ArrayList<>();
-        int N, j;
-        String rule, word, word1, word2;
+        Map<String, String> list = new HashMap<>();
+        int N;
+        String word, word1, word2;
 
         System.out.println("Введите количество правил: ");
         N = scanner.nextInt();
@@ -22,13 +22,12 @@ public class ChangeChars {
 
         System.out.println("Введите правила замены элементов (через пробел): ");
         for (int i = 0; i < N; i++) {
-            rule = scanner.nextLine();
-            list.add(rule);
+            list.put(scanner.next(), scanner.next());
             System.out.println(list);
         }
 
         System.out.println("Введите строку, к которой хотите применить правила изменения: ");
-        word = scanner.nextLine();
+        word = scanner.next();
         word1 = word;
         word2 = word;
 
@@ -81,24 +80,37 @@ public class ChangeChars {
         }*/
 
         // ОНО РАБОТАЕТ 😳 (надо было всего лишь проходить по одному правилу через количество правил)
-        j = N - 1;
-        for (int i = 0; i < N; i++) {
-            word1 = word1.replace(list.get(j).split(" ")[0], list.get(j).split(" ")[1]);
-            j--;
+        StringBuilder resultWithoutRegex = new StringBuilder();
+        for (int i = 0; i < word1.length(); i++) {
+            boolean flag = false;
+
+            for (String key:list.keySet()) {
+                if(i+key.length()<word1.length()) {
+                    String subKey = word1.substring(i, i+key.length());
+                    if (key.equals(subKey)) {
+                        resultWithoutRegex.append(list.get(key));
+                        i += key.length() - 1;
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if(!flag) resultWithoutRegex.append(word1.charAt(i));
         }
-        System.out.println(word1 + " измененная строка без использования регулярных выражений");
+        System.out.println(resultWithoutRegex + " измененная строка без использования регулярных выражений");
 
 
         // Замена через регулярные выражения
-        j = N - 1;
-        for (int i = 0; i < N; i++) {
-            Pattern p = Pattern.compile("(\\w+) (\\w+)");
-            Matcher m = p.matcher(list.get(j));
-            if (m.matches()) {
-                word2 = word2.replace(m.group(1), m.group(2));
-                j--;
-            }
+        StringBuilder resultWithRegex = new StringBuilder();
+        String[] rules = list.keySet().toArray(new String[0]);
+        for (int i = 0; i < rules.length; i++) {
+            resultWithRegex.append(rules[i]);
+            if(i!=rules.length-1) resultWithRegex.append("|");
         }
-        System.out.println(word2 + " измененная строка с использованием регулярных выражений");
+        Pattern pat = Pattern.compile(resultWithRegex.toString());
+        Matcher match = pat.matcher(word2);
+        String result = match.replaceAll(x->list.get(x.group()));
+
+        System.out.println(result + " измененная строка с использованием регулярных выражений");
     }
 }
