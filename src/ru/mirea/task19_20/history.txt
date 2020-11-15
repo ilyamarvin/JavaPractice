@@ -1,0 +1,7 @@
+15/11/20 [21:07] <Server> Hello, Ilya
+15/11/20 [21:07] <Ilya> hello
+15/11/20 [21:07] <Ilya> what's up?
+15/11/20 [21:08] <Server> Hello, test1
+15/11/20 [21:08] <test1> 12345
+15/11/20 [21:08] <Server> Hello, test2
+15/11/20 [21:08] <test2> 32145
