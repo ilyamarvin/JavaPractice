@@ -1,7 +1,5 @@
 package ru.mirea.task21_22;
 
-import java.util.List;
-
 public interface ItemsStore {
     public String get(int id);
 

@@ -3,13 +3,12 @@ package ru.mirea.task21_22;
 import com.google.gson.Gson;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LocalStore implements ItemsStore {
-    private File jsonFile = new File("D:\\JavaProjects\\JavaPractice\\src\\ru\\mirea\\task21_22\\data.json");
+    private File jsonFile = new File("D:\\JavaProjects\\JavaPractice\\src\\main\\java\\ru\\mirea\\task21_22\\data.json");
     Gson gson = new Gson();
 
     public void run() throws IOException {
