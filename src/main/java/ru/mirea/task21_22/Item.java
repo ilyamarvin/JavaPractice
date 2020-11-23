@@ -34,4 +34,13 @@ public class Item {
     public void setData(String data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", data='" + data + '\'' +
+                '}';
+    }
 }

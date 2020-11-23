@@ -1,185 +1,148 @@
 package ru.mirea.task21_22;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class LocalStore implements ItemsStore {
-    private File jsonFile = new File("D:\\JavaProjects\\JavaPractice\\src\\main\\java\\ru\\mirea\\task21_22\\data.json");
-    Gson gson = new Gson();
+public class LocalStore implements ItemStore {
+    private File jsonFile = new File("src\\main\\java\\ru\\mirea\\task21_22\\data.json");
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public void run() throws IOException {
-        System.out.println("Что вы хотите сделать? 1-получение, 2-добавление, 3-редактирование, 4-удаление");
-        Scanner sc = new Scanner(System.in);
-        int msg = sc.nextInt();
-        while (true) {
-            switch (msg) {
-                case 1: {
-                    System.out.println("Введите id предмета");
-                    int id = sc.nextInt();
-                    get(id);
-                    break;
-                }
-
-                case 2: {
-                    System.out.println("Введите через пробел id,  имя, информацию о предмете");
-                    String str = new Scanner(System.in).nextLine();
-                    Pattern pattern = Pattern.compile("(\\d) (\\w+) (\\w+)");
-                    Matcher matcher = pattern.matcher(str);
-                    if (matcher.find()) {
-                        int id = Integer.parseInt(matcher.group(1));
-                        String name = matcher.group(2);
-                        String data = str.replace(matcher.group(1), "").replace(matcher.group(2), "");
-                        addItem(new Item(id, name, data));
-                    }
-                    break;
-                }
-
-                case 3: {
-                    System.out.println("Введите через пробел id предмета, которого вы хотите изменить");
-                    int idPrev = new Scanner(System.in).nextInt();
-                    int idNext = -1;
-                    String name = null;
-                    String data = null;
-                    System.out.println("Какие параметры вы хотите изменить? id = 1, name = 2, data = 3. Введите последовательность нужных цифр");
-                    String operations = new Scanner(System.in).nextLine();
-                    if (operations.contains("1")) {
-                        System.out.println("Введите новый id");
-                        idNext = new Scanner(System.in).nextInt();
-                    }
-                    if (operations.contains("2")) {
-                        System.out.println("Введите новое имя");
-                        name = new Scanner(System.in).nextLine();
-                    }
-                    if (operations.contains("2")) {
-                        System.out.println("Введите новую информацию");
-                        data = new Scanner(System.in).nextLine();
-                    }
-                    editItem(idPrev, new Item(idNext, name, data));
-                    break;
-                }
-                case 4: {
-                    System.out.println("Введите id предмета, который нужно удалить");
-                    int id = new Scanner(System.in).nextInt();
-                    deleteItem(id);
-                    break;
-                }
-            }
-            System.out.println("Что вы хотите сделать? 1-получение, 2-добавление, 3-редактирование, 4-удаление");
-            msg = new Scanner(System.in).nextInt();
+    public LocalStore() {
+        try (PrintWriter writer = new PrintWriter(jsonFile)) {
+            jsonFile.createNewFile();
+            writer.write("[\n]");
+        } catch (IOException e) {
+            e.getStackTrace();
         }
     }
 
     @Override
-    public String get(int id) {
-        String jsonData = null;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
-            StringBuilder jsonBuilder = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
-                jsonBuilder.append("\n");
+    public List<Item> getAll() {
+        String text;
+        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<Item> items = new ArrayList<>();
+        Type collectionType = new TypeToken<Collection<Item>>() {
+        }.getType();
+        try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+            text = reader.readLine();
+            while (text != null) {
+                stringBuilder.append(text + "\n");
+                text = reader.readLine();
             }
-            jsonData = jsonBuilder.toString();
-            Pattern pattern = Pattern.compile(".+\n.+" + id + ",\n.+\n.+\n.+");
-            Matcher matcher = pattern.matcher(jsonData);
-            if (matcher.find())
-                jsonData = matcher.group();
-            System.out.println(jsonData);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            items = gson.fromJson(stringBuilder.toString(), collectionType);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return jsonData;
-    }
-
-    @Override
-    public String addItem(Item item) {
-        try {
-            FileWriter writer = new FileWriter(jsonFile, true);
-            writer.write("\n" + gson.toJson(item).replace(",", ",\n    ").replace("{", "{\n    ").replace("}", "\n},"));
-            writer.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "Entity added";
+        return items;
     }
 
 
     @Override
-    public String editItem(int id, Item item) {
-        String jsonData = null;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
-            String line = null;
-            StringBuilder jsonBuilder = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
-                jsonBuilder.append("\n");
+    public Item get(int id) {
+        List<Item> itemList;
+        itemList = getAll();
+        for (Item tmp : itemList) {
+            if (tmp.getId() == id) {
+                return tmp;
             }
-            jsonData = jsonBuilder.toString();
-            reader.close();
-            Pattern patternForId = Pattern.compile("\"id\":" + id);
-            Pattern patternForName = Pattern.compile("\"id\":" + id + ",\n    \"name\":.+");
-            Pattern pattern = Pattern.compile("(\"id\":" + id + ",)\n(.+)\n(.+)");
-            Matcher matcherForId = patternForId.matcher(jsonData);
-            Matcher matcherForName = patternForName.matcher(jsonData);
-            Matcher matcher = pattern.matcher(jsonData);
-            if (item.getId() != -1) {
-                jsonData = jsonData.replace(String.valueOf(id), String.valueOf(item.getId()));
-            }
-            if (item.getName() != null && matcher.find()) {
-                jsonData = jsonData.replace(matcher.group(2), matcher.group(2).replaceAll(".+", "        \"name\":" + "\"" + item.getName() + "\"" + ","));
-            }
-            if (item.getData() != null && matcher.find()) {
-                jsonData = jsonData.replace(matcher.group(3), matcher.group(3).replaceAll(".+", "\"data\":" + "\"" + item.getData() + "\""));
-            }
-            FileWriter writer = new FileWriter(jsonFile);
-            writer.write(jsonData);
-            writer.close();
-            return jsonData;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return jsonData;
+        return null;
     }
 
     @Override
-    public String deleteItem(int id) {
-        String jsonData = null;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(jsonFile));
-            StringBuilder jsonBuilder = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                jsonBuilder.append(line);
-                jsonBuilder.append("\n");
+    public boolean addItem(Item item) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        if (!checkId(item.getId())) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+                line = reader.readLine();
+                while (!line.equals("]") && line != null) {
+                    stringBuilder.append(line);
+                    if (line.endsWith("}"))
+                        stringBuilder.append(",");
+                    stringBuilder.append("\n");
+                    line = reader.readLine();
+
+                }
+                stringBuilder.append(gson.toJson(item));
+                try (PrintWriter writer = new PrintWriter(jsonFile)) {
+                    writer.write(stringBuilder.toString() + "\n]");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            reader.close();
-            jsonData = jsonBuilder.toString();
-            Pattern pattern = Pattern.compile(".+\n.+" + id + ",\n.+\n.+\n.+");
-            Matcher matcher = pattern.matcher(jsonData);
-            if (matcher.find()) {
-                jsonData = matcher.replaceAll("");
-            }
-            FileWriter writer = new FileWriter(jsonFile);
-            writer.write(jsonData);
-            writer.close();
-            return jsonData;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return true;
         }
-        return jsonData;
+        return false;
+    }
+
+    @Override
+    public boolean editItem(int id, Item item) {
+        if (checkId(id) && item.getId() == id) {
+            deleteItem(id);
+            addItem(item);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteItem(int id) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int index = getAll().size();
+        int count = 0;
+        String line;
+        Item item;
+        if (checkId(id)) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+                line = reader.readLine();
+                stringBuilder.append("[\n");
+                while (line != null) {
+                    if (isCorrect(line) || line.endsWith("},")) {
+                        item = gson.fromJson(line.substring(line.indexOf("{"), line.indexOf("}") + 1), Item.class);
+                        if (item.getId() != id) {
+                            stringBuilder.append(line.substring(line.indexOf("{"), line.indexOf("}") + 1));
+                            if (count < index - 2) {
+                                stringBuilder.append(",");
+                            }
+                            stringBuilder.append("\n");
+                            count++;
+                        }
+                    }
+                    line = reader.readLine();
+                }
+                stringBuilder.append("]");
+                try (PrintWriter writer = new PrintWriter(jsonFile)) {
+                    writer.write(stringBuilder.toString());
+                }
+            } catch (IOException e) {
+                e.getStackTrace();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkId(int id) {
+        if (get(id) != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isCorrect(String js) {
+        try {
+            gson.fromJson(js, Object.class);
+            return true;
+        } catch (com.google.gson.JsonSyntaxException ex) {
+            return false;
+        }
     }
 }
