@@ -1,31 +1,33 @@
 package ru.mirea.task23_24;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Worker {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     HttpClient httpClient = HttpClient.newHttpClient();
+
     String taskURL = "http://80.87.199.76:3000/tasks";
     String reportsURL = "http://80.87.199.76:3000/reports";
     String myName = "Sereda";
+
     List<JsonObject> tasks = new ArrayList<>();
     List<Integer> taskIDs = new ArrayList<>();
 
     String pathToDB = "src\\main\\java\\ru\\mirea\\task23_24\\db.json";
     String pathtoTasks = "src\\main\\java\\ru\\mirea\\task23_24\\tasks.json";
+
     File file = new File(pathToDB);
     FileWriter writer;
     FileReader fileReader;
@@ -68,11 +70,13 @@ public class Worker {
 
     public void doTasks() {
         for (JsonObject task : tasks) {
-            if (!taskIDs.contains(task.get("id").getAsInt())) {
+            if (!getInfoAboutTasks().contains(task.get("id").getAsInt())) {
                 System.out.println(task.get("taskDescription") + " calculated.");
-                double result = computing(task.get("expression").getAsString());
+                double result = computingTasks(task.get("expression").getAsString());
                 sendReport(task.get("id").getAsInt(), result);
                 taskIDs.add(task.get("id").getAsInt());
+            } else {
+                System.out.println("Task " + task.get("id").getAsInt() + " has already been calculated.");
             }
         }
         try (FileWriter writer = new FileWriter(pathToDB)) {
@@ -83,31 +87,21 @@ public class Worker {
         }
     }
 
-    public double computing(String exp) {
-        double a, b;
-        String sign;
-        DecimalFormat df = new DecimalFormat("#.##");
+    public double computingTasks(String exp) {
         exp = exp.replace(" ", "");
         String regular = "(?<=\\d)(?=\\D)|(?<=\\D)(?=\\D)|(?<=\\d\\D)(?=\\d)";
         String[] split = exp.split(regular);
-        a = Integer.parseInt(split[0]);
-        b = Integer.parseInt(split[2]);
-        sign = split[1];
-        switch (sign) {
+        switch (split[1]) {
             case "+":
-                return a + b;
+                return Integer.parseInt(split[0]) + Integer.parseInt(split[2]);
             case "-":
-                return a - b;
+                return Integer.parseInt(split[0]) - Integer.parseInt(split[2]);
             case "*":
-                return a * b;
+                return Integer.parseInt(split[0]) * Integer.parseInt(split[2]);
             case "/":
-                double c = a / b;
-                String res = df.format(c);
-                res = res.replace(",", ".");
-                c = Double.parseDouble(res);
-                return c;
+                return Math.round((double) Integer.parseInt(split[0]) / (double) Integer.parseInt(split[2]) * 100.0) / 100.0;
         }
-        return 0;
+        return 987654321;
     }
 
     public void sendReport(int taskId, double res) {
@@ -123,6 +117,25 @@ public class Worker {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Integer> getInfoAboutTasks() {
+        String text;
+        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<Integer> items = new ArrayList<>();
+        Type collectionType = new TypeToken<Collection<Integer>>() {
+        }.getType();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            text = reader.readLine();
+            while (text != null) {
+                stringBuilder.append(text + "\n");
+                text = reader.readLine();
+            }
+            items = gson.fromJson(stringBuilder.toString(), collectionType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 }
 
