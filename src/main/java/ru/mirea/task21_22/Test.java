@@ -51,7 +51,7 @@ public class Test {
                 change = scanner.nextInt();
                 if ((localStore.get(change)) != null) {
                     System.out.println(localStore.get(change));
-                } else System.out.println(user.printGetError());
+                } else System.out.println(user.printGetError().toString());
                 break;
             case 3:
                 System.out.println(user.printAddItem());
