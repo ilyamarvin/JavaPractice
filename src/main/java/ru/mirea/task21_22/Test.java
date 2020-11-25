@@ -49,10 +49,9 @@ public class Test {
             case 2:
                 System.out.print(user.printGetItem());
                 change = scanner.nextInt();
-                System.out.println("" +
-                        (item != null
-                                ? localStore.get(change)
-                                : user.printGetError().toString()));
+                if ((localStore.get(change)) != null) {
+                    System.out.println(localStore.get(change));
+                } else System.out.println(user.printGetError());
                 break;
             case 3:
                 System.out.println(user.printAddItem());
